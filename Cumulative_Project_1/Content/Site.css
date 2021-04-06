@@ -1,0 +1,61 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+h2 {
+    color: cadetblue;
+    text-align: center;
+}
+.center {
+    width: 40%;
+    margin: 0 auto;
+    border: 1px solid black;
+    text-align: center;
+    padding-bottom: 1.5em;
+}
+
+a {
+    color: chocolate;
+}
+.button {
+    font-size: 1em;
+    background-color: cadetblue;
+    padding: 0.3em 1em;
+}
+#range {
+    width:100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+#t-list {
+    width: 40%;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0.5em 0.5em;
+}
+.upper {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+#t-class {
+    padding: 1em 1em;
+    font-size: 1.1em;
+}
+.t-font {
+    color:crimson;
+}
