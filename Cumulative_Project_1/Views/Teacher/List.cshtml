@@ -4,18 +4,27 @@
     ViewBag.Title = "List";
 }
 <main>
-<h2>Teachers</h2>
+<h2>Teachers List</h2>
+
+<nav id="t-back">
+    <a class="navlink" href="/Teacher/New">Create New Teacher</a>
+</nav>
+
 <div class="center">
     <h3>Search</h3>
     <form action="/Teacher/List" method="GET">
         <div>
             <input type="text" name="SearchKey" />
         </div>
-        <div>
-            <label for="SearchKeyR">Salary Range (between 40 - 80)</label>
-            <input type="range" name="SearchKeyR" min="40" max="80" id="range" />
+        <!--<div>
+            <label for="SearchKeyR">Salary Range Between</label>
+            <input type="number" id="min"/>
+            <input type="number" id="max"/>
+
+        </div> -->
+        <div id="s-button">
+            <input type="submit" value="Search" class="button" />
         </div>
-        <input type="submit" value="Search" class="button" />
     </form>
     <div style="font-style:italic;">@Model.Count() Result(s) found</div>
 </div>
@@ -23,8 +32,7 @@
     foreach (var Teacher in Model)
     {
         <div id="t-list">
-            <h3><a href="/Teacher/Show/@Teacher.TeacherId">@Teacher.TeacherName</a></h3>
-            <p><div class="upper">@Teacher.ClassCode</div> @Teacher.ClassName</p>
+            <h3><a href="/Teacher/Show/@Teacher.TeacherId">@Teacher.TeacherFname @Teacher.TeacherLname</a></h3>
         </div>
 
     }

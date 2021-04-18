@@ -4,17 +4,16 @@
 }
 
 <h2>Teacher Information</h2>
-
+<nav>
+    <div><a class="navlink" href="/Teacher/List">Return to Teachers List</a></div>
+    <div><a class="dellink" href="/Teacher/Deleteconfirm/@Model.TeacherId">Delete</a></div>
+</nav>
 <div class="center">
-    <div class="t-font"><h3>@Model.TeacherName </h3></div>
+    <div class="t-font"><h3>@Model.TeacherFname @Model.TeacherLname </h3></div>
 
-        <div>
-            <div id="t-class"><p>@Model.TeacherName teaches @Model.ClassCode @Model.ClassName.</p></div>
-        </div>
         <div>
             <p>Employee Number: @Model.EmployeeNumber </p>
             <p>Teacher Hire Date: @Model.HireDate </p>
             <p>Teacher Salary: @Model.TeacherSalary</p>
         </div>
  </div>
-

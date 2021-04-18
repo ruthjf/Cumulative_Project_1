@@ -9,13 +9,13 @@ namespace Cumulative_Project_1.Models
     {
         // fields defining a teacher
         public int TeacherId;
-        public string TeacherName;
+        public string TeacherFname;
+        public string TeacherLname;
         public string EmployeeNumber;
         public DateTime HireDate;
         public decimal TeacherSalary;
 
-        public string ClassName;
-        public string ClassCode;
+        public Teacher() { }
 
     }
 }

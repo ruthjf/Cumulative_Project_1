@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using Cumulative_Project_1.Models;
+﻿using Cumulative_Project_1.Models;
 using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Web.Http;
 
 namespace Cumulative_Project_1.Controllers
 {
@@ -24,8 +21,8 @@ namespace Cumulative_Project_1.Controllers
         /// </returns>
         /// GET api/TeacherData/ListTeachers/{SearchKey}/{SearchKeyR}
         [HttpGet]
-        [Route("api/TeacherData/ListTeachers/{SearchKey}/{SearchKeyR}")]
-        public List<Teacher> ListTeachers(string SearchKey, int SearchKeyR)
+        [Route("api/TeacherData/ListTeachers/{SearchKey?}/{SearchKeyR?}")]
+        public List<Teacher> ListTeachers(string SearchKey = null, int? SearchKeyR = null)
         {
             // ensure access search key
             Debug.WriteLine("Searching for a key of ");
@@ -44,7 +41,7 @@ namespace Cumulative_Project_1.Controllers
 
             // command object property SQL Query
             // search matches teacher first name, last name via SearchKey and salary via RangeSearch
-            cmd.CommandText = "Select * from teachers join classes ON classes.classid = teachers.teacherid where teacherfname like @searchkey or teacherlname like @searchkey and salary = @rangesearch";
+            cmd.CommandText = "Select * from teachers left join classes ON classes.classid = teachers.teacherid where lower(teacherfname) like lower(@searchkey) or lower(teacherlname) like lower(@searchkey) or concat(teacherfname, ' ', teacherlname) like lower(@searchkey) or salary = @rangesearch";
 
             // adding parameters for security and defining @searchkey and @rangesearch
             cmd.Parameters.AddWithValue("@searchkey", "%" + SearchKey + "%");
@@ -61,15 +58,18 @@ namespace Cumulative_Project_1.Controllers
             {
                 // instantiating a new Teacher object
                 Teacher NewTeacher = new Teacher();
+                Course NewCourse = new Course();
 
                 //set properties of objects
                 NewTeacher.TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
-                NewTeacher.TeacherName = ResultSet["teacherfname"] + " " + ResultSet["teacherlname"];
+                NewTeacher.TeacherFname = ResultSet["teacherfname"].ToString();
+                NewTeacher.TeacherLname = ResultSet["teacherlname"].ToString();
                 NewTeacher.EmployeeNumber = ResultSet["employeenumber"].ToString();
                 NewTeacher.HireDate = Convert.ToDateTime(ResultSet["hiredate"]);
                 NewTeacher.TeacherSalary = Convert.ToDecimal(ResultSet["salary"]);
-                NewTeacher.ClassName = Convert.ToString(ResultSet["classname"]);
-                NewTeacher.ClassCode = Convert.ToString(ResultSet["classcode"]);
+
+                NewCourse.className = Convert.ToString(ResultSet["classname"]);
+                NewCourse.classCode = Convert.ToString(ResultSet["classcode"]);
 
                 // adding teacher information to empty string
                 Teachers.Add(NewTeacher);
@@ -117,12 +117,13 @@ namespace Cumulative_Project_1.Controllers
 
                 //set properties of object
                 SelectedTeacher.TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
-                SelectedTeacher.TeacherName = ResultSet["teacherfname"] + " " + ResultSet["teacherlname"];
+                SelectedTeacher.TeacherFname = ResultSet["teacherfname"].ToString();
+                SelectedTeacher.TeacherLname = ResultSet["teacherlname"].ToString();
                 SelectedTeacher.EmployeeNumber = ResultSet["employeenumber"].ToString();
                 SelectedTeacher.HireDate = Convert.ToDateTime(ResultSet["hiredate"]);
                 SelectedTeacher.TeacherSalary = Convert.ToDecimal(ResultSet["salary"]);
-                SelectedTeacher.ClassName = Convert.ToString(ResultSet["classname"]);
-                SelectedTeacher.ClassCode = Convert.ToString(ResultSet["classcode"]);
+                // SelectedTeacher.ClassName = Convert.ToString(ResultSet["classname"]);
+                // SelectedTeacher.ClassCode = Convert.ToString(ResultSet["classcode"]);
 
             }
             // closing the connection to database
@@ -131,6 +132,74 @@ namespace Cumulative_Project_1.Controllers
             // return teacher information
             return SelectedTeacher;
         }
+
+
+        /// <summary>
+        /// Deletes a teacher from the database
+        /// </summary>
+        /// <param name="id">Teacher ID</param>
+        /// <example>POST: /api/TeacherData/DeleteTeacher/3</example>
+        
+        [HttpPost]
+        [Route("api/TeacherData/DeleteTeacher/{id}")]
+        public void DeleteTeacher(int id)
+        {
+           // instance of connection
+            MySqlConnection Conn = SchoolDb.AccessDatabase();
+
+            // access open method
+            Conn.Open();
+
+            // establishing a new command for database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            // SQL Query
+            cmd.CommandText = "Delete from teachers where teacherid=@id";
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Prepare();
+
+            //execute statements other than select
+            cmd.ExecuteNonQuery();
+
+            //close connection
+            Conn.Close();
+        }
+
+
+        /// <summary>
+        /// Adds a teacher to the database
+        /// </summary>
+        /// <param name="NewTeacher">New Teacher Object</param>
+        /// <example>POST:/api/TeacherData/AddTeacher/ </example>
+       
+        [HttpPost]
+        public void AddTeacher([FromBody]Teacher NewTeacher)
+        {
+            // instance of connection
+            MySqlConnection Conn = SchoolDb.AccessDatabase();
+
+            // access open method
+            Conn.Open();
+
+            // establishing a new command for database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            // SQL Query
+            cmd.CommandText = "insert into teachers (teacherfname, teacherlname, employeenumber, hiredate, salary) values (@TeacherFname, @TeacherLname, @EmployeeNumber, @HireDate, @TeacherSalary)";
+            cmd.Parameters.AddWithValue("@TeacherFname", NewTeacher.TeacherFname);
+            cmd.Parameters.AddWithValue("@TeacherLname", NewTeacher.TeacherLname);
+            cmd.Parameters.AddWithValue("@EmployeeNumber", NewTeacher.EmployeeNumber);
+            cmd.Parameters.AddWithValue("@HireDate", NewTeacher.HireDate);
+            cmd.Parameters.AddWithValue("@TeacherSalary", NewTeacher.TeacherSalary);
+            cmd.Prepare();
+
+            //execute statements other than select
+            cmd.ExecuteNonQuery();
+
+            //close connection
+            Conn.Close();
+        }
+
     }
 }
         

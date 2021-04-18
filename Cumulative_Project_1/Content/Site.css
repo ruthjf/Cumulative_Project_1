@@ -59,3 +59,52 @@ a {
 .t-font {
     color:crimson;
 }
+
+.dellink:hover {
+    background-color: red;
+    color:white;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+#d-head {
+    color: black;
+    font-size: 1.8em;
+}
+#d-msg {
+    text-align: center;
+    font-size: 1.2em;
+    font-style: italic;
+}
+#delete-msg {
+    padding-top: 1em;
+}
+#b-nav {
+    width: 25%;
+    margin: 0 auto;
+}
+#t-back {
+    padding-top: 2em;
+}
+#d-button {
+    border:none;
+    color: red;
+    border-radius: 10px;
+    font-size: 1.2em;
+    padding: 0.5em 1em;
+}
+#d-button:hover {
+    background-color: red;
+    color: white;
+}
+#s-button {
+    padding-top: 1em;
+    padding-bottom: 0.5em;
+}
+#new-form {
+    width: 60%;
+    margin: 0 auto;
+    border: 1px solid black;
+    text-align: center;
+    padding-bottom: 1.5em;
+    padding-top: 1.5em;
+}
