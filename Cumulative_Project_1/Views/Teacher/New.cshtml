@@ -4,8 +4,11 @@
 }
 
 <h2>New Teacher</h2>
-    <form method="POST" action="/Teacher/Create" id="new-form" onsubmit="return formSubmit();">
-        <div>
+<nav>
+    <div id="t-back"><a class="navlink" href="/Teacher/List">Return to Teachers</a></div>
+</nav>
+    <form method="POST" action="/Teacher/Create" id="new-form" onsubmit="return validateTeacher();">
+        <div id="inner-form">
             <div>
                 <label for="TeacherFname">First Name:</label>
                 <input type="text" name="TeacherFname" id="TeacherFname" />
@@ -16,24 +19,27 @@
             </div>
             <div>
                 <label for="EmployeeNumber">Employee Number:</label>
-                <input type="text" name="EmployeeNumber" id="EmployeeNumber"/>
+                <input type="text" name="EmployeeNumber" id="EmployeeNumber" />
             </div>
             <div>
                 <label for="HireDate">Hire Date:</label>
-                <input type="datetime" name="HireDate" id="HireDate"/>
+                <input type="datetime" name="HireDate" id="HireDate" />
             </div>
             <div>
                 <label for="TeacherSalary">Salary:</label>
                 <input type="number" name="TeacherSalary" id="TeacherSalary" />
             </div>
-            <div>
-                <input type="submit" value="Create Teacher" />
+        </div>
+            <div id="c-button">
+                <input type="submit" value="Create Teacher" class="button"/>
             </div>
+        <div>
+            <div id="error-msg" style="text-align:center;"></div>
         </div>
     </form>
 
     <script>
-        function formSubmit() {
+        function validateTeacher() {
             var fName = document.getElementById('TeacherFname').value;
             var lName = document.getElementById('TeacherLname').value;
             var eNum = document.getElementById('EmployeeNumber').value;
@@ -41,15 +47,16 @@
             var hdate = document.getElementById('HireDate').value;
             var tSalary = document.getElementById('TeacherSalary').value;
             var tSalRegEx = /^\d*\.?\d*$/;
+            var errorMsg = document.getElementById('error-msg');
   
 
-            if (fName == "") { alert("Please enter the Teacher's First Name."); return false; }
-            if (lName == "") { alert("Please enter the Teacher's Last Name."); return false; }
-            if (eNum == "") { alert("Employee Number is required."); return false; }
-            else if (eNum == !eNumRegEx.test(eNum)) { alert("Employee number is invalid."); return false; }
-            if (hdate == "") { alert("Hire Date is required."); return false; }
-            if (tSalary == "") { alert("Teacher Salary is required."); return false; }
-            else if (tSalary == !tSalRegEx.test(tSalary)) { alert("Salary is invalid. (Enter two decimal places)"); return false; }
+            if (fName == "") { errorMsg.innerHTML = "Please enter the Teacher's First Name."; return false; }
+            if (lName == "") { errorMsg.innerHTML ="Please enter the Teacher's Last Name."; return false; }
+            if (eNum == "") { errorMsg.innerHTML ="Employee Number is required."; return false; }
+            else if (eNum == !eNumRegEx.test(eNum)) { errorMsg.innerHTML ="Employee number is invalid."; return false; }
+            if (hdate == "") { errorMsg.innerHTML ="Hire Date is required."; return false; }
+            if (tSalary == "") { errorMsg.innerHTML ="Teacher Salary is required."; return false; }
+            else if (tSalary == !tSalRegEx.test(tSalary)) { errorMsg.innerHTML ="Salary is invalid. (Enter two decimal places)"; return false; }
 
             else return true;
 

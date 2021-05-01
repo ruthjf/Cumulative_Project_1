@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Cumulative_Project_1.Controllers
 {
@@ -19,16 +20,15 @@ namespace Cumulative_Project_1.Controllers
         /// <returns>
         /// A list of Teacher objects
         /// </returns>
-        /// GET api/TeacherData/ListTeachers/{SearchKey}/{SearchKeyR}
+        /// GET api/TeacherData/ListTeachers/{SearchKey}
         [HttpGet]
-        [Route("api/TeacherData/ListTeachers/{SearchKey?}/{SearchKeyR?}")]
-        public List<Teacher> ListTeachers(string SearchKey = null, int? SearchKeyR = null)
+        [Route("api/TeacherData/ListTeachers/{SearchKey?}")]
+        [EnableCors(origins:"*", methods:"*", headers:"*")]
+        public List<Teacher> ListTeachers(string SearchKey = null)
         {
             // ensure access search key
             Debug.WriteLine("Searching for a key of ");
             Debug.WriteLine(SearchKey);
-            Debug.WriteLine("Searching for a key range of ");
-            Debug.WriteLine(SearchKeyR);
 
             // instance of connection
             MySqlConnection Conn = SchoolDb.AccessDatabase();
@@ -41,11 +41,10 @@ namespace Cumulative_Project_1.Controllers
 
             // command object property SQL Query
             // search matches teacher first name, last name via SearchKey and salary via RangeSearch
-            cmd.CommandText = "Select * from teachers left join classes ON classes.classid = teachers.teacherid where lower(teacherfname) like lower(@searchkey) or lower(teacherlname) like lower(@searchkey) or concat(teacherfname, ' ', teacherlname) like lower(@searchkey) or salary = @rangesearch";
+            cmd.CommandText = "Select * from teachers where lower(teacherfname) like lower(@searchkey) or lower(teacherlname) like lower(@searchkey) or concat(teacherfname, ' ', teacherlname) like lower(@searchkey)";
 
-            // adding parameters for security and defining @searchkey and @rangesearch
+            // adding parameters for security and defining @searchkey
             cmd.Parameters.AddWithValue("@searchkey", "%" + SearchKey + "%");
-            cmd.Parameters.AddWithValue("@rangesearch", SearchKeyR);
             cmd.Prepare();
 
             // result of SQL Query into a variable
@@ -58,18 +57,24 @@ namespace Cumulative_Project_1.Controllers
             {
                 // instantiating a new Teacher object
                 Teacher NewTeacher = new Teacher();
-                Course NewCourse = new Course();
+
+                //access column info
+                int TeacherId = (int)ResultSet["teacherid"];
+                string TeacherFname = ResultSet["teacherfname"].ToString();
+                string TeacherLname = ResultSet["teacherlname"].ToString();
+                string EmployeeNumber = ResultSet["employeenumber"].ToString();
+                DateTime HireDate = (DateTime)ResultSet["hiredate"];
+                decimal TeacherSalary = (decimal)ResultSet["salary"];
+
 
                 //set properties of objects
-                NewTeacher.TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
-                NewTeacher.TeacherFname = ResultSet["teacherfname"].ToString();
-                NewTeacher.TeacherLname = ResultSet["teacherlname"].ToString();
-                NewTeacher.EmployeeNumber = ResultSet["employeenumber"].ToString();
-                NewTeacher.HireDate = Convert.ToDateTime(ResultSet["hiredate"]);
-                NewTeacher.TeacherSalary = Convert.ToDecimal(ResultSet["salary"]);
+                NewTeacher.TeacherId = TeacherId;
+                NewTeacher.TeacherFname = TeacherFname;
+                NewTeacher.TeacherLname = TeacherLname;
+                NewTeacher.EmployeeNumber = EmployeeNumber;
+                NewTeacher.HireDate = HireDate;
+                NewTeacher.TeacherSalary = TeacherSalary;
 
-                NewCourse.className = Convert.ToString(ResultSet["classname"]);
-                NewCourse.classCode = Convert.ToString(ResultSet["classcode"]);
 
                 // adding teacher information to empty string
                 Teachers.Add(NewTeacher);
@@ -84,15 +89,17 @@ namespace Cumulative_Project_1.Controllers
         }
 
         /// <summary>
-        /// Returns a teacher's information by id
+        /// Finds a teacher's information through an id
         /// </summary>
-        /// <returns>A teacher's information</returns>
+        /// <param name="id">Teacher Id</param>
+        /// <returns>Teacher object containing matching information about the teacher that has a matching id. If there is not match, it will return a empty teacher object.</returns>
         /// <example>
-        /// GET api/TeacherData/ShowTeacher/{id}
+        /// GET: api/TeacherData/FindTeacher/12 --> {Teacher Object}
         /// </example>
         [HttpGet]
-        [Route("api/TeacherData/FindTeacher/{teacherid}")]
-        public Teacher FindTeacher(int teacherid)
+        [Route("api/TeacherData/FindTeacher/{id}")]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
+        public Teacher FindTeacher(int id)
         {
             // instance of connection
             MySqlConnection Conn = SchoolDb.AccessDatabase();
@@ -104,7 +111,10 @@ namespace Cumulative_Project_1.Controllers
             MySqlCommand cmd = Conn.CreateCommand();
 
             // command object property SQL Query
-            cmd.CommandText = "Select * from teachers join classes ON classes.classid = teachers.teacherid where teachers.teacherid= " + teacherid;
+            cmd.CommandText = "Select * from teachers where teacherid=@id";
+            // parameter for teacherid
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.Prepare();
 
             // result of SQL Query into a variable
             MySqlDataReader ResultSet = cmd.ExecuteReader();
@@ -115,15 +125,21 @@ namespace Cumulative_Project_1.Controllers
             while (ResultSet.Read())
             {
 
+                //access column info
+                int TeacherId = (int)ResultSet["teacherid"];
+                string TeacherFname = ResultSet["teacherfname"].ToString();
+                string TeacherLname = ResultSet["teacherlname"].ToString();
+                string EmployeeNumber = ResultSet["employeenumber"].ToString();
+                DateTime HireDate = (DateTime)ResultSet["hiredate"];
+                decimal TeacherSalary = (decimal)ResultSet["salary"];
+
                 //set properties of object
-                SelectedTeacher.TeacherId = Convert.ToInt32(ResultSet["teacherid"]);
-                SelectedTeacher.TeacherFname = ResultSet["teacherfname"].ToString();
-                SelectedTeacher.TeacherLname = ResultSet["teacherlname"].ToString();
-                SelectedTeacher.EmployeeNumber = ResultSet["employeenumber"].ToString();
-                SelectedTeacher.HireDate = Convert.ToDateTime(ResultSet["hiredate"]);
-                SelectedTeacher.TeacherSalary = Convert.ToDecimal(ResultSet["salary"]);
-                // SelectedTeacher.ClassName = Convert.ToString(ResultSet["classname"]);
-                // SelectedTeacher.ClassCode = Convert.ToString(ResultSet["classcode"]);
+                SelectedTeacher.TeacherId = TeacherId;
+                SelectedTeacher.TeacherFname = TeacherFname;
+                SelectedTeacher.TeacherLname = TeacherLname;
+                SelectedTeacher.EmployeeNumber = EmployeeNumber;
+                SelectedTeacher.HireDate = HireDate;
+                SelectedTeacher.TeacherSalary = TeacherSalary;
 
             }
             // closing the connection to database
@@ -135,13 +151,14 @@ namespace Cumulative_Project_1.Controllers
 
 
         /// <summary>
-        /// Deletes a teacher from the database
+        /// Deletes a teacher from the database with a matching id. Does not maintain relational integrity. Non-deterministic.
         /// </summary>
         /// <param name="id">Teacher ID</param>
         /// <example>POST: /api/TeacherData/DeleteTeacher/3</example>
         
         [HttpPost]
         [Route("api/TeacherData/DeleteTeacher/{id}")]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
         public void DeleteTeacher(int id)
         {
            // instance of connection
@@ -167,16 +184,30 @@ namespace Cumulative_Project_1.Controllers
 
 
         /// <summary>
-        /// Adds a teacher to the database
+        /// Adds a teacher to the database. Non-Deterministic.
         /// </summary>
-        /// <param name="NewTeacher">New Teacher Object</param>
-        /// <example>POST:/api/TeacherData/AddTeacher/ </example>
-       
+        /// <param name="NewTeacher">New Teacher Object with fields matching the columns of teacher table in MySQL database. </param>
+        /// <example>POST:/api/TeacherData/AddTeacher
+        /// POST DATA / FORM DATA / REQUEST BODY
+        /// {
+        /// "TeacherFname":"Alex",
+        /// "TeacherLname":"Bennett",
+        /// "EmployeeNumber":"T123",
+        /// "HireDate":"2001-01-01",
+        /// "TeacherSalary":"44.10"
+        /// }
+        /// </example>
+
         [HttpPost]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
         public void AddTeacher([FromBody]Teacher NewTeacher)
         {
+
+            Debug.WriteLine(NewTeacher.TeacherFname);
+
             // instance of connection
             MySqlConnection Conn = SchoolDb.AccessDatabase();
+
 
             // access open method
             Conn.Open();
@@ -186,6 +217,8 @@ namespace Cumulative_Project_1.Controllers
 
             // SQL Query
             cmd.CommandText = "insert into teachers (teacherfname, teacherlname, employeenumber, hiredate, salary) values (@TeacherFname, @TeacherLname, @EmployeeNumber, @HireDate, @TeacherSalary)";
+
+            //parameterized values
             cmd.Parameters.AddWithValue("@TeacherFname", NewTeacher.TeacherFname);
             cmd.Parameters.AddWithValue("@TeacherLname", NewTeacher.TeacherLname);
             cmd.Parameters.AddWithValue("@EmployeeNumber", NewTeacher.EmployeeNumber);
@@ -198,8 +231,56 @@ namespace Cumulative_Project_1.Controllers
 
             //close connection
             Conn.Close();
+
+
         }
 
+        /// <summary>
+        /// Updates a teacher on the database. Non-Deterministic.
+        /// </summary>
+        /// <param name="NewTeacher">New Teacher Object</param>
+        /// <param name="TeacherInfo">Teacher object with fields matching the columns of teacher table in MySQL database. </param></param>
+        /// <example>POST:/api/TeacherData/UpdateTeacher/11
+        /// POST DATA / FORM DATA / REQUEST BODY
+        /// {
+        /// "TeacherFname":"Alex",
+        /// "TeacherLname":"Bennett",
+        /// "EmployeeNumber":"T123",
+        /// "HireDate":"2001-01-01",
+        /// "TeacherSalary":"44.10"
+        /// }
+        /// </example>
+        [HttpPost]
+        [EnableCors(origins: "*", methods: "*", headers: "*")]
+        public void UpdateTeacher(int id, [FromBody]Teacher TeacherInfo)
+        {
+            // instance of connection
+            MySqlConnection Conn = SchoolDb.AccessDatabase();
+
+            // access open method
+            Conn.Open();
+
+            // establishing a new command for database
+            MySqlCommand cmd = Conn.CreateCommand();
+
+            // SQL Query
+            cmd.CommandText = "update teachers set teacherfname=@TeacherFname, teacherlname=@TeacherLname, employeenumber= @EmployeeNumber, hiredate=@HireDate, salary=@TeacherSalary where teacherid=@TeacherId";
+            cmd.Parameters.AddWithValue("@TeacherFname", TeacherInfo.TeacherFname);
+            cmd.Parameters.AddWithValue("@TeacherLname", TeacherInfo.TeacherLname);
+            cmd.Parameters.AddWithValue("@EmployeeNumber", TeacherInfo.EmployeeNumber);
+            cmd.Parameters.AddWithValue("@HireDate", TeacherInfo.HireDate);
+            cmd.Parameters.AddWithValue("@TeacherSalary", TeacherInfo.TeacherSalary);
+            cmd.Parameters.AddWithValue("@TeacherId", id);
+            cmd.Prepare();
+
+            //execute statements other than select
+            cmd.ExecuteNonQuery();
+
+            //close connection
+            Conn.Close();
+
+
+        }
     }
 }
         

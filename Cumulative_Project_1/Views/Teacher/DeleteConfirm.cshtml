@@ -7,10 +7,12 @@
 <nav id="t-back">
     <a class="navlink" href="/Teacher/Show/@Model.TeacherId">Return to Teacher</a>
 </nav>
-<div id="delete-msg">
-    <h2 id="d-head">Are you sure you want to delete @Model.TeacherFname @Model.TeacherLname?</h2>
-    <p id="d-msg">This teacher will be permanently deleted from the database.</p>
+<div>
+    <div id="inner-delete">
+        <h2 id="d-head">Are you sure you want to delete @Model.TeacherFname @Model.TeacherLname?</h2>
+        <p id="d-msg">This teacher will be permanently deleted from the database.</p>
+        <form method="POST" action="/Teacher/Delete/@Model.TeacherId" id="b-nav">
+            <button class="button">Confirm Delete</button>
+        </form>
+    </div>
 </div>
-<form method="POST" action="/Teacher/Delete/@Model.TeacherId" id="b-nav">
-    <button id="d-button">Confirm Delete</button>
-</form>

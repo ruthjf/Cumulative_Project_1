@@ -8,7 +8,7 @@
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top" id="top-nav">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -16,9 +16,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                <div id="top-a">
                 @Html.ActionLink("Teachers", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse" id="top-b">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
@@ -30,7 +32,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Ruth Frogoso's Cumulative Project Part 2</p>
+            <p>&copy; @DateTime.Now.Year - Ruth Frogoso's Cumulative Project Part 3</p>
         </footer>
     </div>
 

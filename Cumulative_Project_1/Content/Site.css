@@ -20,6 +20,10 @@ textarea {
 h2 {
     color: cadetblue;
     text-align: center;
+    margin-top: 1em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 3em;
 }
 .center {
     width: 40%;
@@ -27,16 +31,25 @@ h2 {
     border: 1px solid black;
     text-align: center;
     padding-bottom: 1.5em;
+    font-size: 1.2em;
 }
 
 a {
-    color: chocolate;
+    color: #a25d5d;
 }
+    a:hover {
+        font-size: 1.1em;
+        color: #659a88;
+    }
 .button {
-    font-size: 1em;
-    background-color: cadetblue;
+    font-size: 1.1em;
+    background-color: #699;
     padding: 0.3em 1em;
+    color: black;
 }
+    .button:hover {
+        background-color: #a25d5d;
+    }
 #range {
     width:100%;
     margin-left: auto;
@@ -57,14 +70,11 @@ a {
     font-size: 1.1em;
 }
 .t-font {
-    color:crimson;
+    color: #324d4d;
 }
 
 .dellink:hover {
-    background-color: red;
-    color:white;
-    text-decoration: none;
-    font-size: 1.2em;
+    color: red;
 }
 #d-head {
     color: black;
@@ -74,26 +84,33 @@ a {
     text-align: center;
     font-size: 1.2em;
     font-style: italic;
+    padding-bottom: 1.5em;
 }
-#delete-msg {
-    padding-top: 1em;
+#inner-delete {
+    border: 1px black solid;
+    width: 50%;
+    margin: 0 auto;
+    padding-bottom: 2em;
 }
 #b-nav {
     width: 25%;
     margin: 0 auto;
 }
 #t-back {
-    padding-top: 2em;
-}
-#d-button {
-    border:none;
-    color: red;
-    border-radius: 10px;
+    padding: 2em;
+    text-align: center;
     font-size: 1.2em;
-    padding: 0.5em 1em;
+}
+#t-nav {
+    padding: 2em;
+    text-align: center;
+    font-size: 1.2em;
+}
+#t-nav a {
+    padding-right: 3em;
 }
 #d-button:hover {
-    background-color: red;
+    background-color: #ec5800;
     color: white;
 }
 #s-button {
@@ -101,10 +118,41 @@ a {
     padding-bottom: 0.5em;
 }
 #new-form {
-    width: 60%;
     margin: 0 auto;
     border: 1px solid black;
-    text-align: center;
+    width: 60%;
+}
+#inner-form {
+    width: 50%;
+    margin: 0 auto;
+    text-align: right;
     padding-bottom: 1.5em;
-    padding-top: 1.5em;
+    padding-top: 2em;
+}
+#inner-form label {
+    padding-top: 0.5em;
+}
+#c-button {
+    width:15%;
+    margin: 0 auto;
+    padding-bottom: 2em;
+    font-size: 1.1em;
+}
+#top-nav {
+    background-color: #699;
+    border: none;
+}
+#top-b a {
+    color: black;
+    font-size: 1.5em;
+}
+#top-b a:hover {
+    text-decoration: underline;
+}
+#top-a a {
+    color: black;
+    font-size: 2em;
+}
+#top-a a:hover {
+    text-decoration: underline;
 }

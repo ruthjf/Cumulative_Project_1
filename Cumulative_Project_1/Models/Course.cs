@@ -7,8 +7,8 @@ namespace Cumulative_Project_1.Models
 {
     public class Course
     {
-        public string className;
-        public string classCode;
-        public string classTeacher;
+        public int TeacherId;
+        public string ClassName;
+        public string ClassCode;
     }
 }
